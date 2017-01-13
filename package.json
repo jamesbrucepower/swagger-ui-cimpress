@@ -29,8 +29,8 @@
     "bootstrap": "3",
     "clipboard": "^1.5.16",
     "handlebars": "^4.0.6",
-    "jquery": "1",
-    "jquery-migrate": "1",
+    "jquery": "1.12.4",
+    "jquery-migrate": "1.4.1",
     "marked": "^0.3.6",
     "swagger-client": "github:swagger-api/swagger-js#v2.1.18",
     "underscore": "^1.8.3"
