@@ -250,6 +250,7 @@ SwaggerUi.Views.OperationView = Backbone.View.extend({
 
     var bodySample = {
       sampleJSON: param.sampleJSON,
+      sampleRequest: param.sampleRequest,
       isParam: true,
       signature: param.signature,
       type: 'Body',

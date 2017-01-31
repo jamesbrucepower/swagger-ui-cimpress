@@ -32,7 +32,7 @@
     "jquery": "1",
     "jquery-migrate": "1",
     "marked": "^0.3.6",
-    "swagger-client": "github:swagger-api/swagger-js#v2.1.18",
+    "swagger-client": "git+https://github.com/jamesbrucepower/swagger-js.git#yap",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
