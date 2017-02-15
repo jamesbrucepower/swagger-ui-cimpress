@@ -23,6 +23,17 @@ SwaggerUi.Views.OperationView = Backbone.View.extend({
     this.nickname = this.model.nickname;
     this.model.encodedParentId = encodeURIComponent(this.parentId);
     this.model.interfaceBaseUrl = window.interfaceBaseUrl;
+    if (opts.swaggerOptions) {
+      this.model.defaultRendering = opts.swaggerOptions.defaultModelRendering;
+
+      if (opts.swaggerOptions.showRequestHeaders) {
+        this.model.showRequestHeaders = true;
+      }
+
+      if (opts.swaggerOptions.showOperationIds) {
+        this.model.showOperationIds = true;
+      }
+    }
     return this;
   },
 
@@ -359,9 +370,74 @@ SwaggerUi.Views.OperationView = Backbone.View.extend({
       if (isFileUpload) {
         return this.handleFileUpload(map, form);
       } else {
+        this.map = map;
         return this.model['do'](map, opts, this.showCompleteStatus, this.showErrorStatus, this);
       }
     }
+  },
+
+  getParamByName: function(name) {
+    var i;
+    if (this.model.parameters) {
+      for(i = 0; i < this.model.parameters.length; i++) {
+        if (this.model.parameters[i].name === name) {
+          return this.model.parameters[i];
+        }
+      }
+    }
+    return null;
+  },
+
+  getTextAreaValue: function(textArea) {
+    var param, parsed, result, i;
+    if (textArea.value === null || jQuery.trim(textArea.value).length === 0) {
+      return null;
+    }
+    param = this.getParamByName(textArea.name);
+    if (param && param.type && param.type.toLowerCase() === 'array') {
+      parsed = textArea.value.split('\n');
+      result = [];
+      for (i = 0; i < parsed.length; i++) {
+        if (parsed[i] !== null && jQuery.trim(parsed[i]).length > 0) {
+          result.push(parsed[i]);
+        }
+      }
+      return result.length > 0 ? result : null;
+    } else {
+      return textArea.value;
+    }
+  },
+ 
+  getInputMap: function (form) {
+    var map, ref1, l, len, o, ref2, m, len1, val, ref3, n, len2;
+    map = {};
+    ref1 = form.find('input');
+    for (l = 0, len = ref1.length; l < len; l++) {
+      o = ref1[l];
+      if ((o.value !== null) && jQuery.trim(o.value).length > 0) {
+        map[o.name] = o.value;
+      }
+      if (o.type === 'file') {
+        map[o.name] = o.files[0];
+      }
+    }
+    ref2 = form.find('textarea');
+    for (m = 0, len1 = ref2.length; m < len1; m++) {
+      o = ref2[m];
+      val = this.getTextAreaValue(o);
+      if ((val !== null) && jQuery.trim(val).length > 0) {
+        map[o.name] = val;
+      }
+    }
+    ref3 = form.find('select');
+    for (n = 0, len2 = ref3.length; n < len2; n++) {
+      o = ref3[n];
+      val = this.getSelectedValue(o);
+      if ((val !== null) && jQuery.trim(val).length > 0) {
+        map[o.name] = val;
+      }
+    }
+    return map;
   },
 
   success: function (response, parent) {
@@ -695,7 +771,7 @@ SwaggerUi.Views.OperationView = Backbone.View.extend({
     $('.request_url pre', $(this.el)).text(url);
     $('.response_code', $(this.el)).html('<pre>' + response.status + '</pre>');
     $('.response_body', $(this.el)).html(response_body);
-    $('.response_headers', $(this.el)).html('<pre>' + _.escape(JSON.stringify(response.headers, null, '  ')).replace(/\n/g, '<br>') + '</pre>');
+    $('.response_headers', $(this.el)).html('<pre>' + _.escape(JSON.stringify(response.headers, null, '  ')).replace(/\n/g, '<br>').replace(/(\&quot\;x-request-id\&quot\;\: \&quot\;)([^\&]+)\&quot\;/, "$1<a href=\"http://docker:5601/app/kibana#/discover?_a=(columns:!(event.req.method,event.req.url,event.res.statusCode,event.responseTime),index:'logstash-*',interval:auto,query:(query_string:(analyze_wildcard:!t,query:'event.reqId:$2')),sort:!('@timestamp',desc))\">$2</a>\"") + '</pre>');
     $('.response', $(this.el)).slideDown();
     $('.response_hider', $(this.el)).show();
     $('.response_throbber', $(this.el)).hide();
@@ -705,6 +781,13 @@ SwaggerUi.Views.OperationView = Backbone.View.extend({
 
     // only highlight the response if response is less than threshold, default state is highlight response
     var opts = this.options.swaggerOptions;
+    if (opts.showRequestHeaders) {
+      var form = $('.sandbox', $(this.el)),
+          map = this.getInputMap(form),
+          requestHeaders = Object.assign(this.model.getHeaderParams(map), this.model.getRealHeaderParams(this.map));
+      delete requestHeaders['Content-Type'];
+      $('.request_headers', $(this.el)).html('<pre>' + _.escape(JSON.stringify(requestHeaders, null, '  ')).replace(/\n/g, '<br>') + '</pre>');
+    }
     if (opts.highlightSizeThreshold && response.data.length > opts.highlightSizeThreshold) {
       return response_body_el;
     } else {

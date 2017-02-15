@@ -77,6 +77,7 @@ window.SwaggerUi = Backbone.Router.extend({
   updateSwaggerUi: function(data){
     this.options.url = data.url;
     this.options.apiKey = data.apiKey;
+    this.options.apiSecret = data.apiSecret;
     this.load();
   },
 

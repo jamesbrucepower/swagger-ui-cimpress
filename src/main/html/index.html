@@ -8,6 +8,7 @@
   <!--style type="text/css"></style-->
   <link rel="stylesheet" type="text/css" href="lib.css">
   <link href="//cloud.typography.com/7971714/6011752/css/fonts.css" rel="stylesheet" type="text/css" />
+  <link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
   <link href="min.css" rel="stylesheet" /> </head>
 
 <body id="SwaggerUi" class="page-docs" style="zoom: 1;">
@@ -48,6 +49,7 @@
   <section id="global_error"></section>
   <script src="lib.js" type='text/javascript'></script>
   <script src="https://cdn.ravenjs.com/3.7.0/raven.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/hmac-sha256.js"></script>
   <script>
   (function(){
     if (window.location.hostname === "developer.cimpress.io" || window.location.hostname === "developer-staging.cloud.cimpress.io") {
@@ -80,6 +82,28 @@
     })();
   </script>
   <script type="text/javascript">
+    SwaggerClient.ApiKeyAuthorization = function(name, key, header, secret) {
+      this.name = name;
+      this.value = key;
+      this.in = header;
+      this.secret = secret;
+    };
+
+    SwaggerClient.ApiKeyAuthorization.prototype.apply = function(obj, authorizations) {
+      var parser = document.createElement('a');
+      parser.href = obj.url;
+      if (obj.body) {
+       var b = JSON.parse(obj.body);
+        b.timestamp = new Date().toISOString();
+        obj.body = JSON.stringify(b);
+      }
+      var data = obj.body || obj.method.toUpperCase() + parser.pathname + parser.search;
+      var hash = CryptoJS.HmacSHA256(data, this.secret);
+      obj.headers['api-key'] = this.value;
+      obj.headers["signature"] = hash;
+      return true;
+    };
+
     $(Raven.wrap(function() {
       function getSchemeAndHost(url) {
         // turns https://gpu.images.documents.cimpress.io/crispify/swagger/docs/v2 into https://gpu.images.documents.cimpress.io
@@ -114,6 +138,12 @@
         url: url,
         dom_id: "swagger-ui-container",
         supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
+        authorizations: {
+          apiKeySignature: new SwaggerClient.ApiKeyAuthorization('apiKeySignature',
+                                                                 'f7a219ed-951b-417c-8650-36e9291b8ef0',
+                                                                 'header',
+                                                                 'caeef8ed-73b7-4e9d-91bb-c18ef927ca18')
+        },
         onComplete: function(swaggerApi, swaggerUi) {
           log(swaggerUi.options);
           if (swaggerUi.options.url) {

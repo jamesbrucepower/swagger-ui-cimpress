@@ -82,19 +82,21 @@
     background-color: #d3ca12;
 }
 .ApiReference--label-get {
-    background-color: #6bbd5b;
+    background-color: #c08283;
 }
 .ApiReference--label-post {
-    background-color: #248fb2;
+    background-color: #373737;
 }
 .ApiReference--label-put {
-    background-color: #9b708b;
+    background-color: #f4f4f4;
+    color: #373737;
+    border: 1px solid #373737;
 }
 .ApiReference--label-patch {
     background-color: #ff9a57;
 }
 .ApiReference--label-delete {
-    background-color: #e27a7a;
+    background-color: #dcd0c0;
 }
 
 
@@ -173,7 +175,7 @@
 .brand {
     font-weight: 500;
     margin: 0;
-    font-family: "Gotham Rounded SSm A","Gotham Rounded SSm B","Gotham Rounded",Gotham,"-apple-system",".SFNSText-Regular","SF UI Text",Roboto,"Segoe UI","Helvetica Neue","Lucida Grande",Helvetica,Arial,"sans-serif";
+    font-family: "Rubik", "Gotham Rounded SSm A","Gotham Rounded SSm B","Gotham Rounded",Gotham,"-apple-system",".SFNSText-Regular","SF UI Text",Roboto,"Segoe UI","Helvetica Neue","Lucida Grande",Helvetica,Arial,"sans-serif";
 }
 #block_error{
     min-height: 384px;
@@ -425,11 +427,11 @@
 }
 
 .swagger-section .operation.get .http_method a, .swagger-section .operation.get .http_method span {
-    background: #6bbd5b
+    background: #c08283;
 }
 
 .swagger-section .operation.post .http_method a, .swagger-section .operation.post .http_method span {
-    background: #248fb2
+    background: #373737;
 }
 
 .swagger-section .operation.options .http_method a, .swagger-section .operation.options .http_method span {
@@ -437,7 +439,7 @@
 }
 
 .swagger-section .operation.delete .http_method a, .swagger-section .operation.delete .http_method span {
-    background: #e27a7a
+    background: #dcd0c0;
 }
 
 .swagger-section .operation.patch .http_method a, .swagger-section .operation.patch .http_method span {
@@ -445,7 +447,9 @@
 }
 
 .swagger-section .operation.put .http_method a, .swagger-section .operation.put .http_method span {
-    background: #9b708b
+    background: #f4f4f4;
+    color: #373737;
+    border: 1px solid #373737;
 }
 
 .swagger-section .form-control.error {
@@ -1780,7 +1784,7 @@ body {
 
 .swagger-section .swagger-ui-wrap {
     line-height: 1;
-    font-family: -apple-system, ".SFNSText-Regular", "SF UI Text", "Roboto", "Segoe UI", "Helvetica Neue", "Lucida Grande", Helvetica, Arial, sans-serif;
+    font-family: "Rubik", -apple-system, ".SFNSText-Regular", "SF UI Text", "Roboto", "Segoe UI", "Helvetica Neue", "Lucida Grande", Helvetica, Arial, sans-serif;
     margin-left: auto;
     margin-right: auto
 }
@@ -2295,7 +2299,7 @@ body {
 }
 
 .swagger-section .swagger-ui-wrap .markdown ol, .swagger-section .swagger-ui-wrap .markdown ul {
-    font-family: -apple-system, ".SFNSText-Regular", "SF UI Text", "Roboto", "Segoe UI", "Helvetica Neue", "Lucida Grande", Helvetica, Arial, sans-serif;
+    font-family: "Rubik", -apple-system, ".SFNSText-Regular", "SF UI Text", "Roboto", "Segoe UI", "Helvetica Neue", "Lucida Grande", Helvetica, Arial, sans-serif;
     margin: 5px 0 10px;
     padding: 0 0 0 18px;
     list-style-type: disc

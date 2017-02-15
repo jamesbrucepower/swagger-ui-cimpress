@@ -250,7 +250,8 @@ SwaggerUi.Views.MainView = Backbone.View.extend({
     }
     this.trigger('update-swagger-ui', {
       url: $('#input_baseUrl').val(),
-      apiKey: $('#input_apiKey').val()
+      apiKey: $('#input_apiKey').val(),
+      apiSecret: $('#input_apiSecret').val()
     });
   },
 

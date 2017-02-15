@@ -49,13 +49,13 @@ gulp.task('minify:js', ['clean'], function() {
         './lib/swagger-oauth.js',
         './lib/copyToClipboard.js',
         './src/main/javascript/**/*.js',
-        './node_modules/swagger-client/browser/swagger-client.js',
+        './node_modules/swagger-client/browser/swagger-client.js'
       ]),
       templates()
     )
     .pipe(sourcemaps.init({loadMaps: true}))
     .pipe(concat('swagger-ui.min.js'))
-    .pipe(gulpif(prod, uglify({mangle: false, compress: false})))
+    .pipe(gulpif(prod, uglify({mangle: false, compress: false, warnings: true})))
     .pipe(sourcemaps.write('.'))
     .pipe(rev())
     .pipe(gulp.dest('./dist'))
