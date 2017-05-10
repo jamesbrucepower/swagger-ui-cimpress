@@ -109,11 +109,11 @@
         var urlParts = url.split('/');
         return urlParts[0] + "//" + urlParts[2];
       }
-      var url = window.location.search.match(/url=([^&]+)/) || (window.location.origin + '/swagger.json');
+      var url = window.location.search.match(/url=([^&]+)/)
       if (url && url.length > 1) {
         url = decodeURIComponent(url[1]);
       } else {
-        url = "/swagger.json";
+        url = window.location.origin + '/swagger.json';
       }
       window.swaggerUrl = url;
       // HACK 2016-06-23 @harsingh @theopak
