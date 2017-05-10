@@ -109,7 +109,7 @@
         var urlParts = url.split('/');
         return urlParts[0] + "//" + urlParts[2];
       }
-      var url = window.location.search.match(/url=([^&]+)/);
+      var url = window.location.search.match(/url=([^&]+)/) || (window.location.origin + '/swagger.json');
       if (url && url.length > 1) {
         url = decodeURIComponent(url[1]);
       } else {
