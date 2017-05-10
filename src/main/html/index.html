@@ -129,20 +129,15 @@
       // pane point to `https://example.com/page#!/pet/addPet`.
       window.interfaceBaseUrl = getQueryParam('interfaceBaseUrl') || window.location.origin;
       window.clientId = getQueryParam("client_id");
-      // HACK - this will enable outh2
-      window.anthony = getQueryParam("anthony");
-      // HACK 2015-12-22 @theopak
-      var accessToken = getQueryParam("access_token");
-      window.accessToken = accessToken;
       window.swaggerUi = new SwaggerUi({
         url: url,
         dom_id: "swagger-ui-container",
         supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
         authorizations: {
           apiKeySignature: new SwaggerClient.ApiKeyAuthorization('apiKeySignature',
-                                                                 'f7a219ed-951b-417c-8650-36e9291b8ef0',
+                                                                 '',
                                                                  'header',
-                                                                 'caeef8ed-73b7-4e9d-91bb-c18ef927ca18')
+                                                                 '')
         },
         onComplete: function(swaggerApi, swaggerUi) {
           log(swaggerUi.options);
@@ -155,27 +150,10 @@
           $('pre code').each(function(i, e) {
             hljs.highlightBlock(e)
           });
-          if (typeof initOAuth == "function" && !!window.anthony) {
-            // NG-4689: Parameters are required by the initOAuth function to
-            // properly open the OAuth dialog.  They are derived from
-            // https://github.com/swagger-api/
-            // Hack: really hacky way to set the audience while we integrate the catalog api
-            var audience = getQueryParam("audience") || (window.location.host.match(/staging|integration|localhost/) ? "https://development.api.cimpress.io/" : "https://api.cimpress.io/");
-            initOAuth({
-              clientId: window.clientId,
-              realm: "",
-              appName: "App",
-              additionalQueryStringParams: {"audience": audience}
-            });
-          }
           if (swaggerUi.options.apiKey) {
             $('#input_apiKey').val(swaggerUi.options.apiKey);
           }
           // HACK 2016-05-02 @theopak
-          if (accessToken) {
-            $('#input_apiKey')[0].value = accessToken.trim();
-            addApiKeyAuthorization(accessToken);
-          }
           $("[data-toggle='tooltip']").tooltip();
         },
         onFailure: function(data) {
@@ -192,20 +170,16 @@
         showRequestHeaders: true,
         sorter: "alpha"
       });
-      // $('#input_apiKey').change(addApiKeyAuthorization);
-      // $('#input_apiKey').val(accessToken);
+      $('#input_apiKey').change(addApiKeyAuthorization);
+      $('#input_apiSecret').change(addApiKeyAuthorization);
       window.swaggerUi.load();
-      // HACK 2015-12-22 @theopak
-      if (accessToken) {
-        addApiKeyAuthorization(accessToken);
-      }
 
       function addApiKeyAuthorization(v) {
-        // var key = encodeURIComponent($('#input_apiKey')[0].value);
-        var key = v || '';
-        if (key && key.trim() != "") {
-          var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization("Authorization", "Bearer " + key, "header");
-          window.swaggerUi.api.clientAuthorizations.add("ACCESS_TOKEN_IN_URL", apiKeyAuth);
+        var key = $('#input_apiKey')[0].value;
+        var secret = $('#input_apiSecret')[0].value;
+        if (key && key.trim() != "" && secret && secret.trim() != "") {
+          var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization('apiKeySignature', key, 'header', secret);
+          window.swaggerUi.api.clientAuthorizations.add('apiKeySignature', apiKeyAuth);
         }
       }
 
